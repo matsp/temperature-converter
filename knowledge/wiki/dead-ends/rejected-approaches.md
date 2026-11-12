@@ -4,7 +4,7 @@ title: Rejected approaches
 description: Things tried or weighed and dropped, with reasons.
 tags: [dead-ends]
 status: draft
-generated: { by: hermes-tech-writer/claude-haiku-5-5, at: 2026-11-12T22:00:00+00:00 }
+generated: { by: hermes-tech-writer/claude-haiku-5-5, at: 2026-11-12T23:10:00+00:00 }
 sources:
   - id: plan
     resource: ../../raw/2026-11-12-architect-plan-temperature-converter.md
@@ -26,6 +26,14 @@ sources:
     resource: ../../raw/2026-11-12-ui-designer-review-temperature-converter.md
     title: Design review
     last_modified: 2026-11-12
+  - id: pd
+    resource: ../../raw/2026-11-12-architect-plan-github-pages-deploy.md
+    title: Pages deploy plan decisions
+    last_modified: 2026-11-12
+  - id: ci
+    resource: ../../raw/2026-11-12-engineer-ci-chrome-startup.md
+    title: CI Chrome startup
+    last_modified: 2026-11-12
 ---
 
 # Rejected approaches
@@ -39,7 +47,11 @@ sources:
 * **`pkill -f remote-debugging-port` to stop Chrome:** it kills the shell running it too. Use `pgrep -f "[c]hrome..."` to avoid the self-match.[^eng]
 * **Fixed figure sizes with `1fr` columns and a 760px breakpoint:** clipped figures at 761-1280px and widened the page on phones. Replaced by container-query caps; see [UX decisions](../design/ux-decisions.md).[^rev]
 * **`inputmode="decimal"`:** the iOS decimal keypad has no minus key. See [UX decisions](../design/ux-decisions.md).[^rev]
+* **Deploy job inside `ci.yml`, or deploy on plain `push`:** see [ADR 0005](../decisions/0005-deploy-workflow-after-green-ci.md).[^pd]
+* **Chrome stderr to `/dev/null` and a 15 s startup poll under a 10 s test timeout:** hid the startup failure; see [the gotcha](../gotchas/ci-test-timeout-hides-chrome-startup.md).[^ci]
 
+[^pd]: Pages deploy plan decisions.
+[^ci]: Engineer note on CI Chrome startup.
 [^plan]: Plan decisions note.
 [^eng]: Engineer note on headless Chrome flakiness.
 [^rev]: Design review.
