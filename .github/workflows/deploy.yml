@@ -1,0 +1,49 @@
+name: Deploy
+
+# Publishes the page to GitHub Pages after CI is green on main.
+# One-time setup (repo admin): Settings -> Pages -> Source: "GitHub Actions".
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+      - name: Stage site (only the files the page needs)
+        run: |
+          mkdir _site
+          cp -r index.html converter.js display.js app.js styles.css fonts _site/
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4
+      - name: Smoke check live URL (page, scripts, styles, fonts)
+        env:
+          PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          for f in "" converter.js display.js app.js styles.css fonts/Barlow-Medium.ttf fonts/Barlow-SemiBold.ttf fonts/BarlowCondensed-Bold.ttf; do
+            curl -fsS -o /dev/null --retry 5 --retry-delay 6 --retry-all-errors "${PAGE_URL}${f}" || { echo "missing on live site: ${PAGE_URL}${f}"; exit 1; }
+          done
