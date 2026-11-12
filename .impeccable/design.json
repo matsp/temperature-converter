@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-12T20:45:00Z",
+  "title": "Design System: Temperature converter",
+  "extensions": {
+    "colorMeta": {
+      "band-m40": { "role": "primary", "displayName": "Deep Violet (< −30 °C)" },
+      "band-m30": { "role": "primary", "displayName": "Violet (−30 °C)" },
+      "band-m20": { "role": "primary", "displayName": "Cobalt (−20 °C)" },
+      "band-m10": { "role": "primary", "displayName": "Sky Blue (−10 °C)" },
+      "band-0": { "role": "primary", "displayName": "Ice Cyan (0 °C)" },
+      "band-10": { "role": "primary", "displayName": "Spring Green (10 °C)" },
+      "band-20": { "role": "primary", "displayName": "Summer Yellow (20 °C)" },
+      "band-30": { "role": "primary", "displayName": "Heat Orange (30 °C)" },
+      "band-40": { "role": "primary", "displayName": "Scorch Red (40 °C)" },
+      "band-50": { "role": "primary", "displayName": "Kiln Red (≥ 50 °C)" },
+      "ink": { "role": "neutral", "displayName": "Chart Ink" },
+      "ground-empty": { "role": "neutral", "displayName": "Unmapped Night" },
+      "ground-abs": { "role": "neutral", "displayName": "Off the Map" }
+    },
+    "typographyMeta": {
+      "figure": { "displayName": "Figure", "purpose": "The three values; one size for all three, from the longest value (120/100/80px desktop, 76/64/52px phone)." },
+      "label": { "displayName": "Field name", "purpose": "CELSIUS / FAHRENHEIT / KELVIN." }
+    },
+    "shadows": [],
+    "motion": [
+      { "name": "shade", "value": "280ms cubic-bezier(0.22, 1, 0.36, 1)", "purpose": "Band change: all colour roles and the legend marker." },
+      { "name": "figure-size", "value": "160ms cubic-bezier(0.22, 1, 0.36, 1)", "purpose": "Figure size step when the longest value changes length." }
+    ],
+    "breakpoints": [ { "name": "phone", "value": "760px" } ]
+  },
+  "components": [
+    {
+      "name": "Field",
+      "kind": "input",
+      "refersTo": "field-input",
+      "description": "A whole-label field: name, bare figure input, unit, underline.",
+      "html": "<label class=\"ds-field\"><span class=\"ds-name\">Celsius</span><span class=\"ds-row\"><input class=\"ds-input\" inputmode=\"decimal\" value=\"24\"><span class=\"ds-sym\">°C</span></span></label>",
+      "css": ".ds-field{display:block;background:#342e14;padding:24px 32px 32px;font-family:Barlow,system-ui,sans-serif}.ds-name{display:block;font:600 15px/1 Barlow,system-ui,sans-serif;text-transform:uppercase;letter-spacing:.08em;color:#b4ab87;margin-bottom:12px}.ds-row{display:flex;align-items:flex-end;gap:8px;border-bottom:3px solid #937f2a;padding-bottom:8px}.ds-field:focus-within .ds-row{border-bottom:4px solid #f2d34f;padding-bottom:7px}.ds-field:focus-within .ds-name{color:#f4ecd2}.ds-input{field-sizing:content;min-width:.3ch;height:114px;border:0;background:transparent;padding:0;outline:none;font:700 120px/.95 'Barlow Condensed','Arial Narrow',sans-serif;font-variant-numeric:tabular-nums;letter-spacing:-.02em;color:#f2d34f;caret-color:#f4ecd2}.ds-sym{font:700 41px/1 'Barlow Condensed','Arial Narrow',sans-serif;color:#b4ab87;padding-bottom:14px}"
+    },
+    {
+      "name": "Legend",
+      "kind": "custom",
+      "refersTo": "legend-band",
+      "description": "Isotherm ramp −40…60 °C with an ink marker at the current value.",
+      "html": "<div class=\"ds-legend\"><div class=\"ds-marker\" style=\"left:64%\"><i>24 °C</i><b></b></div><div class=\"ds-bands\"><span style=\"background:#3b2a7a\"></span><span style=\"background:#4a3f9e\"></span><span style=\"background:#3f62c4\"></span><span style=\"background:#4a8fd6\"></span><span style=\"background:#7cc3e0\"></span><span style=\"background:#a8d98a\"></span><span style=\"background:#f2d34f\"></span><span style=\"background:#f29a3a\"></span><span style=\"background:#e0542e\"></span><span style=\"background:#a8232a\"></span></div></div>",
+      "css": ".ds-legend{position:relative;background:#342e14;padding:44px 24px 24px}.ds-bands{display:grid;grid-template-columns:repeat(10,1fr);height:24px}.ds-marker{position:absolute;top:20px;width:0}.ds-marker b{position:absolute;left:-2px;top:22px;width:4px;height:46px;background:#f4ecd2}.ds-marker i{position:absolute;top:0;transform:translateX(-50%);font:600 14px/1 Barlow,system-ui,sans-serif;font-style:normal;color:#f4ecd2;white-space:nowrap}"
+    },
+    {
+      "name": "Below-absolute-zero notice",
+      "kind": "custom",
+      "description": "Inline status line under the fields.",
+      "html": "<p class=\"ds-notice\" role=\"status\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 18 18\" aria-hidden=\"true\"><circle cx=\"9\" cy=\"9\" r=\"7.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"/><path d=\"M9 4.8v5.2\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\"/><circle cx=\"9\" cy=\"12.9\" r=\"1.1\" fill=\"currentColor\"/></svg>Below absolute zero</p>",
+      "css": ".ds-notice{display:flex;align-items:center;gap:12px;margin:0;padding:16px;background:#0b0a0d;color:#f4ecd2;font:600 18px/28px Barlow,system-ui,sans-serif}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Deep Shade",
+    "overview": "The page is a weather map at night. The temperature you type picks an isotherm band, and the whole page takes a very dark shade of that band; the three numbers glow in the band's own colour. A legend strip along the foot shows the full ramp with a marker at your value.",
+    "keyCharacteristics": [
+      "Ground and figures follow the current value's 10 °C band; ten bands plus \"empty\" and \"below absolute zero\".",
+      "Huge condensed tabular figures; the input is the output.",
+      "Three fields of equal weight side by side on desktop, stacked on phone.",
+      "Legend strip with a value marker anchors the colour to a scale.",
+      "Flat, square, hairline-ruled; no elevation."
+    ],
+    "rules": [
+      { "name": "The Whole Page Moves Rule", "body": "Ground, figure, label and rule switch together, always from the same band.", "section": "colors" },
+      { "name": "The Key Rule", "body": "The colour always has a key: the legend strip is on every state that has a value.", "section": "colors" },
+      { "name": "The Raw Band Rule", "body": "Raw band colours appear only in the legend. Never set text in a raw cold band colour.", "section": "colors" }
+    ],
+    "dos": [
+      "Do copy the band-role block from design/mockups/tokens.css as is and switch bands with one data-band attribute on <body>.",
+      "Do keep all three figures the same size, chosen from the longest value.",
+      "Do keep the notice slot reserved even when empty.",
+      "Do self-host Barlow and Barlow Condensed next to index.html."
+    ],
+    "donts": [
+      "Don't add boxes, cards, shadows, rounded corners or buttons; the fields are bare figures on a rule.",
+      "Don't set text in the raw cold band colours.",
+      "Don't show an error popup or red error styling for non-numeric input; the other fields just clear.",
+      "Don't add a light theme or a theme toggle; the dark shade is the design."
+    ]
+  }
+}

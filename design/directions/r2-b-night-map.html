@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Temperature converter — round 2, B: night map</title>
+<link rel="stylesheet" href="r2-shared.css">
+<style>
+/* Fixed near-black ground, like a night-mode forecast map. Colour lives in the numerals and the legend. */
+:root {
+  --ground: #101215;
+  --num: var(--hue);
+  --ink: #e9ebee;
+  --ink-2: #8d939c;
+  --rule: #2b2f36;
+}
+.legend li { box-shadow: inset 0 0 0 40px rgba(16, 18, 21, 0.58); }
+.legend li.now { box-shadow: 0 0 28px 4px color-mix(in oklch, var(--hue) 55%, transparent); z-index: 1; }
+.legend li.now span { color: var(--ink); }
+</style>
+</head>
+<body>
+<header>
+  <h1>Temperature converter</h1>
+  <p>Type in any field. The numbers take the colour of the temperature.</p>
+</header>
+<main>
+  <div class="field"><label for="c">Celsius</label><div class="row"><input id="c" inputmode="decimal" value="24"><span class="sym">°C</span></div></div>
+  <div class="field"><label for="f">Fahrenheit</label><div class="row"><input id="f" inputmode="decimal" value="75.2"><span class="sym">°F</span></div></div>
+  <div class="field"><label for="k">Kelvin</label><div class="row"><input id="k" inputmode="decimal" value="297.15"><span class="sym">K</span></div></div>
+</main>
+<div class="legend" aria-hidden="true">
+  <div class="marker"><i>24 °C</i><b></b></div>
+  <ol>
+    <li style="background:var(--t-m40)"><span>−40</span></li><li style="background:var(--t-m30)"><span>−30</span></li>
+    <li style="background:var(--t-m20)"><span>−20</span></li><li style="background:var(--t-m10)"><span>−10</span></li>
+    <li style="background:var(--t-0)"><span>0</span></li><li style="background:var(--t-10)"><span>10</span></li>
+    <li class="now" style="background:var(--t-20)"><span>20</span></li><li style="background:var(--t-30)"><span>30</span></li>
+    <li style="background:var(--t-40)"><span>40</span></li><li style="background:var(--t-50)"><span>50 °C</span></li>
+  </ol>
+</div>
+</body>
+</html>

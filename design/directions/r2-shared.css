@@ -1,0 +1,35 @@
+/* Round 2 (direction B, darker): shared layout. Each sketch sets the colour roles. */
+@font-face { font-family: "Barlow"; src: url("../fonts/Barlow-Medium.ttf") format("truetype"); font-weight: 500; }
+@font-face { font-family: "Barlow"; src: url("../fonts/Barlow-SemiBold.ttf") format("truetype"); font-weight: 600; }
+@font-face { font-family: "Barlow Condensed"; src: url("../fonts/BarlowCondensed-Bold.ttf") format("truetype"); font-weight: 700; }
+:root {
+  /* isotherm ramp, one band per 10 °C */
+  --t-m40: #3b2a7a; --t-m30: #4a3f9e; --t-m20: #3f62c4; --t-m10: #4a8fd6; --t-0: #7cc3e0;
+  --t-10: #a8d98a; --t-20: #f2d34f; --t-30: #f29a3a; --t-40: #e0542e; --t-50: #a8232a;
+  --hue: var(--t-20); /* isotherm colour of the current Celsius value, set live */
+  --sans: "Barlow", system-ui, sans-serif;
+  --display: "Barlow Condensed", "Arial Narrow", sans-serif;
+}
+* { box-sizing: border-box; margin: 0; }
+html { font: 500 16px/1.5 var(--sans); color: var(--ink); }
+body { min-height: 100vh; background: var(--ground); display: grid; grid-template-rows: auto 1fr auto; }
+header { display: flex; justify-content: space-between; align-items: baseline; padding: 32px 56px 0; }
+header h1 { font: 600 20px/1 var(--sans); letter-spacing: 0.01em; }
+header p { font-size: 15px; color: var(--ink-2); }
+main { display: grid; grid-template-columns: repeat(3, 1fr); align-content: center; padding: 0 56px; }
+.field { padding: 24px 32px 28px; border-left: 2px solid var(--rule); }
+.field:first-child { border-left: 0; padding-left: 0; }
+.field label { display: block; font: 600 15px/1 var(--sans); text-transform: uppercase; letter-spacing: 0.08em; color: var(--label, var(--ink-2)); margin-bottom: 10px; }
+.row { display: flex; align-items: baseline; gap: 8px; }
+.field input { width: 100%; min-width: 0; border: 0; background: transparent; color: var(--num);
+  font: 700 136px/0.95 var(--display); font-variant-numeric: tabular-nums; letter-spacing: -0.02em;
+  border-bottom: 3px solid var(--rule); padding: 0 0 6px; caret-color: var(--num); }
+.field input:focus { outline: none; border-bottom-color: var(--num); }
+.field .sym { font: 700 44px/1 var(--display); color: var(--label, var(--ink-2)); }
+.legend { padding: 0 56px 40px; }
+.legend ol { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(10, 1fr); border: 2px solid var(--ground); }
+.legend li { height: 28px; position: relative; }
+.legend li span { position: absolute; top: 34px; left: -1px; font: 600 13px/1 var(--sans); font-variant-numeric: tabular-nums; color: var(--ink-2); }
+.legend .marker { position: relative; height: 0; }
+.legend .marker b { position: absolute; left: 64%; top: -42px; transform: translateX(-50%); width: 4px; height: 44px; background: var(--ink); }
+.legend .marker i { position: absolute; left: 64%; top: -66px; transform: translateX(-50%); font: 600 14px/1 var(--sans); font-style: normal; white-space: nowrap; color: var(--ink); }

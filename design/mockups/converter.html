@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Temperature converter</title>
+<link rel="stylesheet" href="tokens.css">
+<style>
+/* Mockup of index.html. States can be opened with a hash:
+   #c=24 (default)  #c=-18  #f=-40  #c=-300 (below absolute zero)  #empty  #focus=f */
+* { box-sizing: border-box; margin: 0; }
+html { font: 500 16px/1.5 var(--font-ui); color: var(--ink); background: var(--ground); }
+body {
+  min-height: 100vh; min-height: 100dvh;
+  display: grid; grid-template-rows: auto 1fr auto;
+  background: var(--ground);
+  transition: background-color var(--shade-duration) var(--ease-out);
+}
+::selection { background: var(--figure); color: var(--ground); }
+
+header { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-4); padding: var(--space-8) var(--space-14) 0; }
+header h1 { font: 600 20px/1.2 var(--font-ui); letter-spacing: 0.01em; color: var(--ink); }
+header p { font-size: 16px; color: var(--label); transition: color var(--shade-duration) var(--ease-out); }
+
+main { align-self: center; padding: var(--space-10) var(--space-14); }
+.fields { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+/* A field is one big label: clicking anywhere in it focuses its input. */
+.field { display: block; padding: var(--space-6) var(--space-8) var(--space-8); border-left: var(--rule-column) solid var(--rule); cursor: text;
+  transition: border-color var(--shade-duration) var(--ease-out); }
+.field:first-child { border-left: 0; padding-left: 0; }
+.field:last-child { padding-right: 0; }
+.name { display: block; font: 600 15px/1 var(--font-ui); text-transform: uppercase; letter-spacing: 0.08em; color: var(--label); margin-bottom: var(--space-3);
+  transition: color var(--shade-duration) var(--ease-out); }
+/* flex-end, not baseline: an empty input has no text baseline and would drop the unit. */
+.row { display: flex; align-items: flex-end; gap: var(--space-2); border-bottom: var(--rule-field) solid var(--rule); padding-bottom: var(--space-2);
+  transition: border-color var(--shade-duration) var(--ease-out); }
+.field:focus-within .row { border-bottom: var(--rule-field-focus) solid var(--figure); padding-bottom: calc(var(--space-2) - 1px); }
+.field:focus-within .name { color: var(--ink); }
+
+input {
+  field-sizing: content; min-width: 0.3ch; max-width: 100%; height: calc(var(--fig) * 0.95);
+  border: 0; background: transparent; padding: 0; outline: none;
+  font: 700 var(--fig)/0.95 var(--font-figures); font-variant-numeric: tabular-nums; letter-spacing: -0.02em;
+  color: var(--figure); caret-color: var(--ink);
+  transition: color var(--shade-duration) var(--ease-out), font-size 160ms var(--ease-out);
+}
+@supports not (field-sizing: content) { input { width: 100%; flex: 1; } }
+input::placeholder { color: var(--label); opacity: 1; }
+.sym { font: 700 calc(var(--fig) * var(--unit-ratio))/1 var(--font-figures); color: var(--label); white-space: nowrap;
+  padding-bottom: calc(var(--fig) * 0.12);
+  transition: color var(--shade-duration) var(--ease-out); }
+
+.fields { --fig: var(--figure-l); }
+.fields[data-size="m"] { --fig: var(--figure-m); }
+.fields[data-size="s"] { --fig: var(--figure-s); }
+
+/* Fixed-height slot so the page never jumps when the notice appears. */
+.notice { min-height: 28px; margin-top: var(--space-6); font: 600 18px/28px var(--font-ui); color: var(--ink); display: flex; align-items: center; gap: var(--space-3); }
+.notice svg { flex: none; }
+.notice:empty { visibility: hidden; }
+
+/* Legend: the isotherm ramp with a marker at the current Celsius value. */
+.legend { padding: 0 var(--space-14) var(--space-10); }
+.scale { position: relative; padding-top: 44px; }
+.bands { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(10, 1fr); height: 24px; }
+.ticks { position: relative; height: 26px; }
+.ticks span { position: absolute; top: 8px; transform: translateX(-50%); font: 600 13px/1 var(--font-ui); font-variant-numeric: tabular-nums; color: var(--label); white-space: nowrap; }
+.ticks span:first-child { transform: none; }
+.ticks span:last-child { transform: translateX(-100%); }
+.marker { position: absolute; top: 0; left: var(--pos, 64%); width: 0; transition: left var(--shade-duration) var(--ease-out); }
+.marker b { position: absolute; left: -2px; top: 22px; width: 4px; height: 46px; background: var(--ink); }
+.marker i { position: absolute; top: 0; left: 0; transform: translateX(var(--shift, -50%)); font: 600 14px/1 var(--font-ui); font-style: normal; font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--ink); }
+.legend[data-off="true"] .marker b { height: 24px; top: 44px; }
+.legend[hidden-marker] .marker { display: none; }
+
+@media (max-width: 760px) {
+  header { flex-direction: column; gap: var(--space-1); padding: var(--space-6) var(--space-6) 0; }
+  header h1 { font-size: 18px; }
+  header p { font-size: 15px; }
+  main { padding: var(--space-6); align-self: start; }
+  .fields { grid-template-columns: 1fr; gap: var(--space-2); --figure-l: 76px; --figure-m: 64px; --figure-s: 52px; }
+  .field, .field:first-child, .field:last-child { border-left: 0; padding: var(--space-4) 0; }
+  .name { font-size: 14px; margin-bottom: var(--space-2); }
+  .notice { margin-top: var(--space-3); font-size: 17px; }
+  .legend { padding: 0 var(--space-6) var(--space-8); }
+  .ticks span:nth-child(even) { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Temperature converter</h1>
+  <p>Type in any field; the other two follow.</p>
+</header>
+
+<main>
+  <div class="fields" id="fields">
+    <label class="field"><span class="name">Celsius</span><span class="row"><input id="c" inputmode="decimal" autocomplete="off" spellcheck="false" value="24"><span class="sym" aria-hidden="true">°C</span></span></label>
+    <label class="field"><span class="name">Fahrenheit</span><span class="row"><input id="f" inputmode="decimal" autocomplete="off" spellcheck="false" value="75.2"><span class="sym" aria-hidden="true">°F</span></span></label>
+    <label class="field"><span class="name">Kelvin</span><span class="row"><input id="k" inputmode="decimal" autocomplete="off" spellcheck="false" value="297.15"><span class="sym" aria-hidden="true">K</span></span></label>
+  </div>
+  <p class="notice" id="notice" role="status" aria-live="polite"></p>
+</main>
+
+<div class="legend" id="legend" aria-hidden="true">
+  <div class="scale">
+    <div class="marker" id="marker"><i id="mlabel">24 °C</i><b></b></div>
+    <ol class="bands">
+      <li style="background:var(--band-m40)"></li><li style="background:var(--band-m30)"></li><li style="background:var(--band-m20)"></li>
+      <li style="background:var(--band-m10)"></li><li style="background:var(--band-0)"></li><li style="background:var(--band-10)"></li>
+      <li style="background:var(--band-20)"></li><li style="background:var(--band-30)"></li><li style="background:var(--band-40)"></li>
+      <li style="background:var(--band-50)"></li>
+    </ol>
+    <div class="ticks">
+      <span style="left:0%">−40</span><span style="left:10%">−30</span><span style="left:20%">−20</span><span style="left:30%">−10</span>
+      <span style="left:40%">0</span><span style="left:50%">10</span><span style="left:60%">20</span><span style="left:70%">30</span>
+      <span style="left:80%">40</span><span style="left:90%">50</span><span style="left:100%">60 °C</span>
+    </div>
+  </div>
+</div>
+
+<!-- Mockup-only behaviour; the real page takes conversions from converter.js. -->
+<script>
+const $ = id => document.getElementById(id);
+const inputs = { c: $("c"), f: $("f"), k: $("k") };
+const toC = { c: v => v, f: v => (v - 32) * 5 / 9, k: v => v - 273.15 };
+const fromC = { c: v => v, f: v => v * 9 / 5 + 32, k: v => v + 273.15 };
+const fmt = v => { const r = Math.round(v * 100) / 100; return (Object.is(r, -0) ? 0 : r).toString().replace("-", "−"); };
+const parse = s => { const t = s.trim().replace("−", "-").replace(",", "."); return t === "" || isNaN(Number(t)) ? null : Number(t); };
+
+function band(c) {
+  if (c < -273.15) return "abs";
+  const keys = ["m40","m30","m20","m10","0","10","20","30","40","50"];
+  return keys[Math.max(0, Math.min(9, Math.floor((c + 40) / 10)))];
+}
+function render(c) {
+  const len = Math.max(...Object.values(inputs).map(i => i.value.length));
+  $("fields").dataset.size = len <= 6 ? "l" : len <= 7 ? "m" : "s";
+  if (c === null) {
+    delete document.body.dataset.band; $("notice").textContent = ""; $("legend").setAttribute("hidden-marker", ""); return;
+  }
+  $("legend").removeAttribute("hidden-marker");
+  document.body.dataset.band = band(c);
+  const below = c < -273.15;
+  $("notice").innerHTML = below ? '<svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><circle cx="9" cy="9" r="7.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M9 4.8v5.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="9" cy="12.9" r="1.1" fill="currentColor"/></svg>Below absolute zero' : "";
+  const p = (c + 40) / 100, pos = Math.max(0, Math.min(1, p));
+  const legend = $("legend"); legend.dataset.off = String(p < 0 || p > 1);
+  legend.style.setProperty("--pos", (pos * 100) + "%");
+  legend.style.setProperty("--shift", pos < 0.06 ? "0%" : pos > 0.94 ? "-100%" : "-50%");
+  $("mlabel").textContent = fmt(c) + " °C" + (p < 0 ? ", off the scale" : p > 1 ? ", off the scale" : "");
+}
+function update(from) {
+  const v = parse(inputs[from].value);
+  for (const u of Object.keys(inputs)) if (u !== from) inputs[u].value = v === null ? "" : fmt(fromC[u](toC[from](v)));
+  render(v === null ? null : toC[from](v));
+}
+for (const u of Object.keys(inputs)) inputs[u].addEventListener("input", () => update(u));
+
+// Mockup state from the hash
+const h = location.hash.slice(1);
+if (h === "empty") { for (const i of Object.values(inputs)) i.value = ""; render(null); }
+else {
+  const m = h.match(/^([cfk])=(.+)$/);
+  if (m) { inputs[m[1]].value = decodeURIComponent(m[2]).replace("-", "−"); update(m[1]); } else update("c");
+}
+const fm = h.match(/focus=([cfk])/); if (fm) inputs[fm[1]].focus();
+</script>
+</body>
+</html>
