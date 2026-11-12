@@ -149,7 +149,7 @@ Derived from each band colour in OKLCH and checked for contrast on its own groun
 Fonts are self-hosted from `design/fonts/` (SIL OFL). The page must work offline from `file://`, so never load a hosted font stylesheet.
 
 ### Hierarchy
-- **Figure** (700, 120 / 100 / 80px desktop, 76 / 64 / 52px phone, line-height 0.95, tracking −0.02em, tabular numerals): the three values. One size for all three fields, picked from the longest value: ≤ 6 characters large, 7 medium, 8+ small.
+- **Figure** (700, 120 / 100 / 80px desktop, 76 / 64 / 52px phone, line-height 0.95, tracking −0.02em, tabular numerals): the three values. One size for all three fields, picked from the longest value: ≤ 6 characters large, 7 medium, 8+ small. **The sizes are maximums: a figure never outgrows its column.** Each tier is capped by the width of the fields block (`.fields { container-type: inline-size }`): desktop l `min(120px, 10.5cqi − 24px)`, m `min(100px, 9.3cqi − 24px)`, s `min(80px, 5.8cqi − 14px)`; phone l `min(76px, 29cqi − 12px)`, m `min(64px, 25cqi − 12px)`, s `min(52px, 16cqi − 6px)`. Measured so the worst case of each tier (six digits; seven characters; twelve characters) fits every field from 320 to 1920px wide. A cut-off figure reads as a wrong number, so fitting beats size.
 - **Unit** (700, 0.34 × figure): °C, °F, K after each figure, in the label colour.
 - **Title** (600, 20px; 18px phone): "Temperature converter".
 - **Body** (500, 16px; 15px phone): the help line.
@@ -161,8 +161,8 @@ Minus signs in output are the true minus (U+2212 "−"), not a hyphen; inputs ac
 
 ## Layout
 
-- **Desktop (> 760px):** three rows of the page grid: header (title left, help right, 32px top / 56px sides), main (vertically centred), legend (56px sides, 40px bottom). Fields are three equal columns separated by 1px rules; the first field has no left padding, the last no right padding; 32px inner padding otherwise.
-- **Phone (≤ 760px):** header stacks title over help (24px padding). Fields stack, 16px vertical padding each, no column rules. Legend shows every other tick (−40, −20, 0, 20, 40, 60 °C).
+- **Desktop (≥ 1024px):** three rows of the page grid: header (title left, help right, 32px top / 56px sides), main (vertically centred), legend (56px sides, 40px bottom). Fields are three equal columns separated by 1px rules; the first field has no left padding, the last no right padding; 32px inner padding otherwise.
+- **Phone and tablet (≤ 1023px):** header stacks title over help (24px padding). Fields stack in one `minmax(0, 1fr)` column (never `1fr`, which lets a long value widen the page), 16px vertical padding each, no column rules. Below 1024px three columns would squeeze the figures under the stacked size (45px at 761px), so tablets stack too. Legend shows every other tick (−40, −20, 0, 20, 40, 60 °C).
 - **Notice slot:** a fixed 28px row under the fields, always reserved, so the page never jumps when the notice appears.
 - **Spacing:** 4px base scale (4, 8, 12, 16, 24, 32, 40, 56).
 
@@ -178,7 +178,7 @@ Square everything (0px radius). Lines are the only shapes: the 3px field underli
 
 ### Field (input)
 - **Structure:** the whole field is a `<label>`: name (CELSIUS), then a row holding the input and the unit symbol, underlined. Clicking anywhere in the field focuses its input.
-- **Input:** no box, no background, no radius; figure type in the figure colour; caret in ink; `inputmode="decimal"`; width follows its content (`field-sizing: content`), so the unit sits right after the number. Where `field-sizing` is unsupported, the input fills the row and the unit sits at the right edge.
+- **Input:** no box, no background, no radius; figure type in the figure colour; caret in ink; `inputmode="text"` with `enterkeyhint="done"` (not `decimal`: the iOS decimal keypad has no minus key, so negative values could not be typed); width follows its content (`field-sizing: content`), so the unit sits right after the number. Where `field-sizing` is unsupported, the input fills the row and the unit sits at the right edge.
 - **Row alignment:** `align-items: flex-end` with the unit lifted by 0.12 × figure, so an empty input does not drop the unit.
 - **Focus:** underline becomes 4px in the figure colour; the field name turns ink. No outline ring (the underline is the focus indicator, ≥ 6.7:1).
 - **Empty:** all three inputs empty, unit symbols stay, ground goes to `ground-empty`, legend marker hidden.

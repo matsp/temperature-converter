@@ -51,9 +51,12 @@ input::placeholder { color: var(--label); opacity: 1; }
   padding-bottom: calc(var(--fig) * 0.12);
   transition: color var(--shade-duration) var(--ease-out); }
 
-.fields { --fig: var(--figure-l); }
-.fields[data-size="m"] { --fig: var(--figure-m); }
-.fields[data-size="s"] { --fig: var(--figure-s); }
+/* The figure never outgrows its column: each tier is capped by the width of .fields. */
+.fields { container-type: inline-size;
+  --fig-fit-l: calc(10.5cqi - 24px); --fig-fit-m: calc(9.3cqi - 24px); --fig-fit-s: calc(5.8cqi - 14px);
+  --fig: min(var(--figure-l), var(--fig-fit-l)); }
+.fields[data-size="m"] { --fig: min(var(--figure-m), var(--fig-fit-m)); }
+.fields[data-size="s"] { --fig: min(var(--figure-s), var(--fig-fit-s)); }
 
 /* Fixed-height slot so the page never jumps when the notice appears. */
 .notice { min-height: 28px; margin-top: var(--space-6); font: 600 18px/28px var(--font-ui); color: var(--ink); display: flex; align-items: center; gap: var(--space-3); }
@@ -74,12 +77,13 @@ input::placeholder { color: var(--label); opacity: 1; }
 .legend[data-off="true"] .marker b { height: 24px; top: 44px; }
 .legend[hidden-marker] .marker { display: none; }
 
-@media (max-width: 760px) {
+@media (max-width: 1023px) {
   header { flex-direction: column; gap: var(--space-1); padding: var(--space-6) var(--space-6) 0; }
   header h1 { font-size: 18px; }
   header p { font-size: 15px; }
   main { padding: var(--space-6); align-self: start; }
-  .fields { grid-template-columns: 1fr; gap: var(--space-2); --figure-l: 76px; --figure-m: 64px; --figure-s: 52px; }
+  .fields { grid-template-columns: minmax(0, 1fr); gap: var(--space-2); --figure-l: 76px; --figure-m: 64px; --figure-s: 52px;
+    --fig-fit-l: calc(29cqi - 12px); --fig-fit-m: calc(25cqi - 12px); --fig-fit-s: calc(16cqi - 6px); }
   .field, .field:first-child, .field:last-child { border-left: 0; padding: var(--space-4) 0; }
   .name { font-size: 14px; margin-bottom: var(--space-2); }
   .notice { margin-top: var(--space-3); font-size: 17px; }
@@ -97,9 +101,9 @@ input::placeholder { color: var(--label); opacity: 1; }
 
 <main>
   <div class="fields" id="fields">
-    <label class="field"><span class="name">Celsius</span><span class="row"><input id="c" inputmode="decimal" autocomplete="off" spellcheck="false" value="24"><span class="sym" aria-hidden="true">°C</span></span></label>
-    <label class="field"><span class="name">Fahrenheit</span><span class="row"><input id="f" inputmode="decimal" autocomplete="off" spellcheck="false" value="75.2"><span class="sym" aria-hidden="true">°F</span></span></label>
-    <label class="field"><span class="name">Kelvin</span><span class="row"><input id="k" inputmode="decimal" autocomplete="off" spellcheck="false" value="297.15"><span class="sym" aria-hidden="true">K</span></span></label>
+    <label class="field"><span class="name">Celsius</span><span class="row"><input id="c" inputmode="text" enterkeyhint="done" autocomplete="off" spellcheck="false" value="24"><span class="sym" aria-hidden="true">°C</span></span></label>
+    <label class="field"><span class="name">Fahrenheit</span><span class="row"><input id="f" inputmode="text" enterkeyhint="done" autocomplete="off" spellcheck="false" value="75.2"><span class="sym" aria-hidden="true">°F</span></span></label>
+    <label class="field"><span class="name">Kelvin</span><span class="row"><input id="k" inputmode="text" enterkeyhint="done" autocomplete="off" spellcheck="false" value="297.15"><span class="sym" aria-hidden="true">K</span></span></label>
   </div>
   <p class="notice" id="notice" role="status" aria-live="polite"></p>
 </main>
