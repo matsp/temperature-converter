@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Temperature converter</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header>
+  <h1>Temperature converter</h1>
+  <p>Type in any field; the other two follow.</p>
+</header>
+
+<main>
+  <div class="fields" id="fields">
+    <label class="field"><span class="name">Celsius</span><span class="row"><input id="c" inputmode="decimal" autocomplete="off" spellcheck="false"><span class="sym" aria-hidden="true">°C</span></span></label>
+    <label class="field"><span class="name">Fahrenheit</span><span class="row"><input id="f" inputmode="decimal" autocomplete="off" spellcheck="false"><span class="sym" aria-hidden="true">°F</span></span></label>
+    <label class="field"><span class="name">Kelvin</span><span class="row"><input id="k" inputmode="decimal" autocomplete="off" spellcheck="false"><span class="sym" aria-hidden="true">K</span></span></label>
+  </div>
+  <p class="notice" id="notice" role="status" aria-live="polite"></p>
+</main>
+
+<div class="legend" id="legend" aria-hidden="true" hidden-marker>
+  <div class="scale">
+    <div class="marker" id="marker"><i id="mlabel"></i><b></b></div>
+    <ol class="bands">
+      <li style="background:var(--band-m40)"></li><li style="background:var(--band-m30)"></li><li style="background:var(--band-m20)"></li>
+      <li style="background:var(--band-m10)"></li><li style="background:var(--band-0)"></li><li style="background:var(--band-10)"></li>
+      <li style="background:var(--band-20)"></li><li style="background:var(--band-30)"></li><li style="background:var(--band-40)"></li>
+      <li style="background:var(--band-50)"></li>
+    </ol>
+    <div class="ticks">
+      <span style="left:0%">−40</span><span style="left:10%">−30</span><span style="left:20%">−20</span><span style="left:30%">−10</span>
+      <span style="left:40%">0</span><span style="left:50%">10</span><span style="left:60%">20</span><span style="left:70%">30</span>
+      <span style="left:80%">40</span><span style="left:90%">50</span><span style="left:100%">60 °C</span>
+    </div>
+  </div>
+</div>
+
+<script src="converter.js"></script><script src="display.js"></script><script src="app.js"></script>
+</body>
+</html>

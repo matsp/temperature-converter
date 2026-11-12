@@ -1,0 +1,136 @@
+/* Temperature converter: design tokens ("Deep shade").
+   Values are normative and mirror DESIGN.md. The page sets data-band on <body>
+   from the current Celsius value; every colour role below follows that band. */
+
+@font-face { font-family: "Barlow"; src: url("fonts/Barlow-Medium.ttf") format("truetype"); font-weight: 500; font-display: swap; }
+@font-face { font-family: "Barlow"; src: url("fonts/Barlow-SemiBold.ttf") format("truetype"); font-weight: 600; font-display: swap; }
+@font-face { font-family: "Barlow Condensed"; src: url("fonts/BarlowCondensed-Bold.ttf") format("truetype"); font-weight: 700; font-display: swap; }
+
+:root {
+  /* Isotherm ramp: legend band colours, one per 10 °C, from −40 to 60 °C */
+  --band-m40: #3b2a7a; --band-m30: #4a3f9e; --band-m20: #3f62c4; --band-m10: #4a8fd6; --band-0: #7cc3e0;
+  --band-10: #a8d98a; --band-20: #f2d34f; --band-30: #f29a3a; --band-40: #e0542e; --band-50: #a8232a;
+
+  /* Fixed neutrals */
+  --ink: #f4ecd2;            /* page title, legend marker, below-absolute-zero numerals */
+
+  /* Type */
+  --font-ui: "Barlow", system-ui, sans-serif;
+  --font-figures: "Barlow Condensed", "Arial Narrow", sans-serif;
+  --figure-l: 120px;         /* longest value ≤ 6 characters (the usual case: Kelvin is 6) */
+  --figure-m: 100px;         /* longest value 7 characters */
+  --figure-s: 80px;          /* longest value ≥ 8 characters */
+  --unit-ratio: 0.34;        /* unit symbol size relative to the figure */
+
+  /* Space (4px base) */
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-6: 24px;
+  --space-8: 32px; --space-10: 40px; --space-14: 56px;
+
+  /* Lines */
+  --rule-field: 3px;         /* underline under each figure */
+  --rule-field-focus: 4px;
+  --rule-column: 1px;        /* divider between the three fields */
+
+  /* Motion */
+  --shade-duration: 280ms;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Default (no band yet) = the empty state */
+  --ground: #12110e; --figure: #f4ecd2; --label: #a39a85; --rule: #7a725f;
+}
+
+/* One block per band: ground = band taken very dark, figure = band lifted to ≥ 6.7:1,
+   label = muted band tint (≥ 5.8:1), rule = mid band tone (≥ 3.4:1, a UI boundary). */
+[data-band="m40"] { --ground: #121023; --figure: #bab3fe; --label: #a8a6c9; --rule: #7d77b4; }
+[data-band="m30"] { --ground: #151429; --figure: #b5b5ff; --label: #a6a7ca; --rule: #7877bc; }
+[data-band="m20"] { --ground: #121b30; --figure: #a0bcff; --label: #9cabcb; --rule: #617ec3; }
+[data-band="m10"] { --ground: #142333; --figure: #8bc3ff; --label: #94aeca; --rule: #5684b4; }
+[data-band="0"]   { --ground: #1b2c33; --figure: #7cc3e0; --label: #96b0bb; --rule: #5a889b; }
+[data-band="10"]  { --ground: #25301e; --figure: #a8d98a; --label: #9fb294; --rule: #6c8b58; }
+[data-band="20"]  { --ground: #342e14; --figure: #f2d34f; --label: #b4ab87; --rule: #937f2a; }
+[data-band="30"]  { --ground: #362311; --figure: #f29a3a; --label: #c2a58b; --rule: #ab7237; }
+[data-band="40"]  { --ground: #351810; --figure: #ffa289; --label: #c8a095; --rule: #c06148; }
+[data-band="50"]  { --ground: #2b100f; --figure: #ffa09a; --label: #c99f9c; --rule: #bc615d; }
+/* Below absolute zero: off the map. No band colour, near-black ground, figures in ink. */
+[data-band="abs"] { --ground: #0b0a0d; --figure: #f4ecd2; --label: #a39a85; --rule: #6e6878; }
+/* Mockup of index.html. States can be opened with a hash:
+   #c=24 (default)  #c=-18  #f=-40  #c=-300 (below absolute zero)  #empty  #focus=f */
+* { box-sizing: border-box; margin: 0; }
+html { font: 500 16px/1.5 var(--font-ui); color: var(--ink); background: var(--ground); }
+body {
+  min-height: 100vh; min-height: 100dvh;
+  display: grid; grid-template-rows: auto 1fr auto;
+  background: var(--ground);
+  transition: background-color var(--shade-duration) var(--ease-out);
+}
+::selection { background: var(--figure); color: var(--ground); }
+
+header { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-4); padding: var(--space-8) var(--space-14) 0; }
+header h1 { font: 600 20px/1.2 var(--font-ui); letter-spacing: 0.01em; color: var(--ink); }
+header p { font-size: 16px; color: var(--label); transition: color var(--shade-duration) var(--ease-out); }
+
+main { align-self: center; padding: var(--space-10) var(--space-14); }
+.fields { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+/* A field is one big label: clicking anywhere in it focuses its input. */
+.field { display: block; padding: var(--space-6) var(--space-8) var(--space-8); border-left: var(--rule-column) solid var(--rule); cursor: text;
+  transition: border-color var(--shade-duration) var(--ease-out); }
+.field:first-child { border-left: 0; padding-left: 0; }
+.field:last-child { padding-right: 0; }
+.name { display: block; font: 600 15px/1 var(--font-ui); text-transform: uppercase; letter-spacing: 0.08em; color: var(--label); margin-bottom: var(--space-3);
+  transition: color var(--shade-duration) var(--ease-out); }
+/* flex-end, not baseline: an empty input has no text baseline and would drop the unit. */
+.row { display: flex; align-items: flex-end; gap: var(--space-2); border-bottom: var(--rule-field) solid var(--rule); padding-bottom: var(--space-2);
+  transition: border-color var(--shade-duration) var(--ease-out); }
+.field:focus-within .row { border-bottom: var(--rule-field-focus) solid var(--figure); padding-bottom: calc(var(--space-2) - 1px); }
+.field:focus-within .name { color: var(--ink); }
+
+input {
+  field-sizing: content; min-width: 0.3ch; max-width: 100%; height: calc(var(--fig) * 0.95);
+  border: 0; background: transparent; padding: 0; outline: none;
+  font: 700 var(--fig)/0.95 var(--font-figures); font-variant-numeric: tabular-nums; letter-spacing: -0.02em;
+  color: var(--figure); caret-color: var(--ink);
+  transition: color var(--shade-duration) var(--ease-out), font-size 160ms var(--ease-out);
+}
+@supports not (field-sizing: content) { input { width: 100%; flex: 1; } }
+input::placeholder { color: var(--label); opacity: 1; }
+.sym { font: 700 calc(var(--fig) * var(--unit-ratio))/1 var(--font-figures); color: var(--label); white-space: nowrap;
+  padding-bottom: calc(var(--fig) * 0.12);
+  transition: color var(--shade-duration) var(--ease-out); }
+
+.fields { --fig: var(--figure-l); }
+.fields[data-size="m"] { --fig: var(--figure-m); }
+.fields[data-size="s"] { --fig: var(--figure-s); }
+
+/* Fixed-height slot so the page never jumps when the notice appears. */
+.notice { min-height: 28px; margin-top: var(--space-6); font: 600 18px/28px var(--font-ui); color: var(--ink); display: flex; align-items: center; gap: var(--space-3); }
+.notice svg { flex: none; }
+.notice:empty { visibility: hidden; }
+
+/* Legend: the isotherm ramp with a marker at the current Celsius value. */
+.legend { padding: 0 var(--space-14) var(--space-10); }
+.scale { position: relative; padding-top: 44px; }
+.bands { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(10, 1fr); height: 24px; }
+.ticks { position: relative; height: 26px; }
+.ticks span { position: absolute; top: 8px; transform: translateX(-50%); font: 600 13px/1 var(--font-ui); font-variant-numeric: tabular-nums; color: var(--label); white-space: nowrap; }
+.ticks span:first-child { transform: none; }
+.ticks span:last-child { transform: translateX(-100%); }
+.marker { position: absolute; top: 0; left: var(--pos, 64%); width: 0; transition: left var(--shade-duration) var(--ease-out); }
+.marker b { position: absolute; left: -2px; top: 22px; width: 4px; height: 46px; background: var(--ink); }
+.marker i { position: absolute; top: 0; left: 0; transform: translateX(var(--shift, -50%)); font: 600 14px/1 var(--font-ui); font-style: normal; font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--ink); }
+.legend[data-off="true"] .marker b { height: 24px; top: 44px; }
+.legend[hidden-marker] .marker { display: none; }
+
+@media (max-width: 760px) {
+  header { flex-direction: column; gap: var(--space-1); padding: var(--space-6) var(--space-6) 0; }
+  header h1 { font-size: 18px; }
+  header p { font-size: 15px; }
+  main { padding: var(--space-6); align-self: start; }
+  .fields { grid-template-columns: 1fr; gap: var(--space-2); --figure-l: 76px; --figure-m: 64px; --figure-s: 52px; }
+  .field, .field:first-child, .field:last-child { border-left: 0; padding: var(--space-4) 0; }
+  .name { font-size: 14px; margin-bottom: var(--space-2); }
+  .notice { margin-top: var(--space-3); font-size: 17px; }
+  .legend { padding: 0 var(--space-6) var(--space-8); }
+  .ticks span:nth-child(even) { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
