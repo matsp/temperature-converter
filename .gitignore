@@ -6,3 +6,7 @@
 .impeccable/build/
 .impeccable/live/sessions/
 .impeccable/critique/snapshots/
+
+# Agent worktrees and superpowers scratch
+.worktrees/
+.superpowers/

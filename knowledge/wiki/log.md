@@ -1,0 +1,4 @@
+# Log
+
+## 2026-11-11
+* **Creation**: wiki skeleton
