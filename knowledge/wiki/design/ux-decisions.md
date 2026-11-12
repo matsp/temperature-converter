@@ -4,7 +4,7 @@ title: UX decisions
 description: Why the screen works the way it does; values are in DESIGN.md.
 tags: [design,ux]
 status: draft
-generated: { by: hermes-tech-writer/claude-haiku-5-5, at: 2026-11-12T12:00:00+00:00 }
+generated: { by: hermes-tech-writer/claude-haiku-5-5, at: 2026-11-12T22:00:00+00:00 }
 sources:
   - id: dec
     resource: ../../raw/2026-11-12-ui-designer-decisions-temperature-converter.md
@@ -17,6 +17,18 @@ sources:
   - id: dir
     resource: ../../raw/2026-11-12-ui-designer-direction-round-temperature-converter.md
     title: Direction round
+    last_modified: 2026-11-12
+  - id: rev
+    resource: ../../raw/2026-11-12-ui-designer-review-temperature-converter.md
+    title: Design review
+    last_modified: 2026-11-12
+  - id: rec
+    resource: ../../raw/2026-11-12-ui-designer-recheck-temperature-converter.md
+    title: Design re-check
+    last_modified: 2026-11-12
+  - id: eng
+    resource: ../../raw/2026-11-12-engineer-headless-chrome-flakiness.md
+    title: Headless Chrome flakiness
     last_modified: 2026-11-12
 ---
 
@@ -34,7 +46,14 @@ Design system: [DESIGN.md](../../../DESIGN.md). Mode: Operate (a one-screen tool
 * **Offline:** fonts are self-hosted so the page works from `file://`.[^dec]
 * **Shape:** square corners everywhere, 4px-based spacing scale.[^dec]
 * **Mats's decisions:** round 1 "Option B, but darker"; round 2 "A"; gate 4 approved 2026-11-12, no changes.[^dec]
+* **Figures never clip:** the figure size is the smaller of the tier size and a cap derived from the field container width (container queries); the stacking breakpoint is 1023px, so tablets stack. The first build used fixed sizes and showed wrong-looking numbers at 761-1280px (P0). Exact CSS is in [DESIGN.md](../../../DESIGN.md) and `design/mockups/`.[^rev][^rec]
+* **Inputs use `inputmode="text"` with `enterkeyhint="done"`:** the iOS decimal keypad has no minus key, so negatives could not be typed. Trade-off: Android's decimal pad gives way to the text keyboard.[^rev][^rec]
+* **Typed field keeps the user's hyphen:** the own field is never rewritten, so it shows "-" while the others show "−" (U+2212). Accepted, P3-4.[^eng][^rec]
+* **Gate status:** the review required changes (P0, P1), both gaps in the approved design; the re-check approved with no open P0/P1. Open items: [design debt](../debt/open-design-findings.md).[^rec]
 
 [^dec]: Design decisions note.
 [^des]: Design note note.
 [^dir]: Direction round note.
+[^rev]: Design review.
+[^rec]: Design re-check.
+[^eng]: Engineer note on headless Chrome flakiness.
