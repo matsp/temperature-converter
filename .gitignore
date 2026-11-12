@@ -1,0 +1,8 @@
+# Impeccable: runtime and per-developer files (shared files stay committed)
+.impeccable/config.local.json
+.impeccable/questions/
+.impeccable/mocks/
+.impeccable/review/
+.impeccable/build/
+.impeccable/live/sessions/
+.impeccable/critique/snapshots/
