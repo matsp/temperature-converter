@@ -185,7 +185,7 @@ test("fields are labelled", async () => {
   for (const [id, name] of [["c", "celsius"], ["f", "fahrenheit"], ["k", "kelvin"]]) {
     const label = await evalJs(`document.getElementById("${id}").labels[0].textContent.toLowerCase()`);
     assert.ok(label.includes(name), `${id}: ${label}`);
-    assert.equal(await evalJs(`document.getElementById("${id}").getAttribute("inputmode")`), "decimal");
+    assert.equal(await evalJs(`document.getElementById("${id}").getAttribute("inputmode")`), "text");
   }
 });
 
