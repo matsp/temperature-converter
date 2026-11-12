@@ -4,7 +4,7 @@ title: Accessibility
 description: Contrast approach and rules the reviewer checks.
 tags: [design,accessibility]
 status: draft
-generated: { by: hermes-tech-writer/claude-haiku-5-5, at: 2026-11-12T12:00:00+00:00 }
+generated: { by: hermes-tech-writer/claude-haiku-5-5, at: 2026-11-12T22:00:00+00:00 }
 sources:
   - id: des
     resource: ../../raw/2026-11-12-ui-designer-design-temperature-converter.md
@@ -13,6 +13,14 @@ sources:
   - id: dir
     resource: ../../raw/2026-11-12-ui-designer-direction-round-temperature-converter.md
     title: Direction round
+    last_modified: 2026-11-12
+  - id: rev
+    resource: ../../raw/2026-11-12-ui-designer-review-temperature-converter.md
+    title: Design review
+    last_modified: 2026-11-12
+  - id: rec
+    resource: ../../raw/2026-11-12-ui-designer-recheck-temperature-converter.md
+    title: Design re-check
     last_modified: 2026-11-12
 ---
 
@@ -23,6 +31,11 @@ sources:
 * Dark figures are lifted so cold bands stay readable.[^des]
 * The whole field is a `<label>`, so the click target is the full field.[^des]
 * Contrast hooks may flag unresolved `var()` / `color-mix()`; judge the rendered pairs.[^dir]
+* Audit (16/20 before the fix): contrast passes in all 12 states, tab order is c, f, k, focus underline is 4.04:1 against the rule, reduced motion works.[^rev]
+* `#notice` is the only live region; converted values are not announced (open, see [design debt](../debt/open-design-findings.md)).[^rev]
+* Number inputs use `inputmode="text"` so iOS offers a minus key.[^rec]
 
 [^des]: Design note note.
 [^dir]: Direction round note.
+[^rev]: Design review.
+[^rec]: Design re-check.

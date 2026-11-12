@@ -1,6 +1,7 @@
 # Log
 
 ## 2026-11-12
+* **Ingest**: `2026-11-12-engineer-headless-chrome-flakiness.md`: page-test flakiness
 * **Ingest**: `2026-11-12-ui-designer-design-temperature-converter.md`: headless Chrome width
 * **Ingest**: `2026-11-12-ui-designer-direction-round-temperature-converter.md`: legend opacity
 
