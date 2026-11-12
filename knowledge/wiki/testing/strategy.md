@@ -4,7 +4,7 @@ title: Test strategy
 description: How logic and page behaviour are tested.
 tags: [testing,ci]
 status: draft
-generated: { by: hermes-tech-writer/claude-haiku-5-5, at: 2026-11-12T22:00:00+00:00 }
+generated: { by: hermes-tech-writer/claude-haiku-5-5, at: 2026-11-12T23:10:00+00:00 }
 sources:
   - id: plan
     resource: ../../raw/2026-11-12-architect-plan-temperature-converter.md
@@ -21,6 +21,22 @@ sources:
   - id: rev
     resource: ../../raw/2026-11-12-ui-designer-review-temperature-converter.md
     title: Design review
+    last_modified: 2026-11-12
+  - id: dg
+    resource: ../../raw/2026-11-12-engineer-deploy-guard-tests.md
+    title: Deploy guard tests
+    last_modified: 2026-11-12
+  - id: ci
+    resource: ../../raw/2026-11-12-engineer-ci-chrome-startup.md
+    title: CI Chrome startup
+    last_modified: 2026-11-12
+  - id: qadep
+    resource: ../../raw/2026-11-12-qa-github-pages-deploy.md
+    title: QA GitHub Pages deploy
+    last_modified: 2026-11-12
+  - id: pd
+    resource: ../../raw/2026-11-12-architect-plan-github-pages-deploy.md
+    title: Pages deploy plan decisions
     last_modified: 2026-11-12
 ---
 
@@ -44,3 +60,15 @@ See [Commands](../runbook/commands.md) and the [headless Chrome gotcha](../gotch
 [^qa]: QA report.
 [^eng]: Engineer note on headless Chrome flakiness.
 [^rev]: Design review.
+
+## Deploy guards and CI timeout
+
+* `test/deploy.test.js` (12 tests) reads the workflow YAML and `index.html` as text, no parser, to keep the repo dependency-free. It checks relative asset references, that every referenced file is published (exact set), and that every published file is smoke-checked. The smoke list uses `""` for the page root instead of `index.html`.[^dg][^pd]
+* Mutation checks proved the guards: `href="/styles.css"` fails with `absolute asset reference`; dropping `fonts` from the `cp` line fails with `not published: fonts/Barlow-Medium.ttf`; dropping that font from the smoke list fails with `not smoke-checked`.[^dg]
+* CI has `timeout-minutes: 10` and runs with `--test-timeout=10000`; the suite takes about 5 s locally.[^pd] A slow `before` hook is reported on every test, see [the gotcha](../gotchas/ci-test-timeout-hides-chrome-startup.md).[^ci]
+* QA on `feat/github-pages-deploy`: 52 tests, 52 pass, about 5 s, at 7564f2f and again at 0329fcb after the CI fix; verdict PASS. The live deploy could not be verified before merge, and QA did not query CI itself (no gh CLI or token).[^qadep]
+
+[^dg]: Deploy guard tests note.
+[^ci]: Engineer note on CI Chrome startup.
+[^qadep]: QA report on the Pages deploy.
+[^pd]: Pages deploy plan decisions.
