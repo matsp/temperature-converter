@@ -8,6 +8,7 @@ on:
 jobs:
   ci:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     env:
       CHROME: google-chrome
     steps:
@@ -16,4 +17,4 @@ jobs:
         with:
           node-version: 24
       - name: Tests (unit and headless-Chrome page tests)
-        run: node --test "test/**/*.test.js"
+        run: node --test --test-timeout=10000 "test/**/*.test.js"

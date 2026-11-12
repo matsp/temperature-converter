@@ -6,11 +6,11 @@ Rules for every agent working in this repository.
 
 Temperature converter: one static page (`index.html` at the repo root) where typing a temperature in Celsius, Fahrenheit or Kelvin updates the other two fields live. For anyone who needs a quick conversion, on phone or desktop, opened straight from `file://`.
 
-Components: `converter.js` (pure conversion, parsing, formatting), `display.js` (pure view state: band, figure size, notice, legend), `app.js` (DOM wiring), `styles.css` + `fonts/` (Deep Shade design, see `DESIGN.md` and `design/mockups/`). No framework, no build step, no runtime dependencies. Deployment target: none.
+Components: `converter.js` (pure conversion, parsing, formatting), `display.js` (pure view state: band, figure size, notice, legend), `app.js` (DOM wiring), `styles.css` + `fonts/` (Deep Shade design, see `DESIGN.md` and `design/mockups/`). No framework, no build step, no runtime dependencies. Deployment target: GitHub Pages, `https://matsp.github.io/temperature-converter/`, published by `.github/workflows/deploy.yml` after CI is green on `main` (only `index.html`, `converter.js`, `display.js`, `app.js`, `styles.css`, `fonts/`; asset references stay relative).
 
 ## Commands
 
-- Test (also what CI job `ci` runs): `node --test "test/**/*.test.js"` (Node ≥ 24; page tests need headless Chrome, path in `CHROME`, default `/opt/hermes/tools/chromium-1208/chrome-linux64/chrome`).
+- Test (also what CI job `ci` runs): `node --test --test-timeout=10000 "test/**/*.test.js"` (Node ≥ 24; page tests need headless Chrome, path in `CHROME`, default `/opt/hermes/tools/chromium-1208/chrome-linux64/chrome`).
 - Build: none. Run: open `index.html` in a browser.
 
 Full build, test, lint and run commands live in [knowledge/wiki/runbook/](knowledge/wiki/runbook/index.md). Keep them current there, not here.
