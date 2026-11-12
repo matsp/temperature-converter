@@ -1,0 +1,55 @@
+/* Temperature converter: design tokens ("Deep shade").
+   Values are normative and mirror DESIGN.md. The page sets data-band on <body>
+   from the current Celsius value; every colour role below follows that band. */
+
+@font-face { font-family: "Barlow"; src: url("../fonts/Barlow-Medium.ttf") format("truetype"); font-weight: 500; font-display: swap; }
+@font-face { font-family: "Barlow"; src: url("../fonts/Barlow-SemiBold.ttf") format("truetype"); font-weight: 600; font-display: swap; }
+@font-face { font-family: "Barlow Condensed"; src: url("../fonts/BarlowCondensed-Bold.ttf") format("truetype"); font-weight: 700; font-display: swap; }
+
+:root {
+  /* Isotherm ramp: legend band colours, one per 10 °C, from −40 to 60 °C */
+  --band-m40: #3b2a7a; --band-m30: #4a3f9e; --band-m20: #3f62c4; --band-m10: #4a8fd6; --band-0: #7cc3e0;
+  --band-10: #a8d98a; --band-20: #f2d34f; --band-30: #f29a3a; --band-40: #e0542e; --band-50: #a8232a;
+
+  /* Fixed neutrals */
+  --ink: #f4ecd2;            /* page title, legend marker, below-absolute-zero numerals */
+
+  /* Type */
+  --font-ui: "Barlow", system-ui, sans-serif;
+  --font-figures: "Barlow Condensed", "Arial Narrow", sans-serif;
+  --figure-l: 120px;         /* longest value ≤ 6 characters (the usual case: Kelvin is 6) */
+  --figure-m: 100px;         /* longest value 7 characters */
+  --figure-s: 80px;          /* longest value ≥ 8 characters */
+  --unit-ratio: 0.34;        /* unit symbol size relative to the figure */
+
+  /* Space (4px base) */
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-6: 24px;
+  --space-8: 32px; --space-10: 40px; --space-14: 56px;
+
+  /* Lines */
+  --rule-field: 3px;         /* underline under each figure */
+  --rule-field-focus: 4px;
+  --rule-column: 1px;        /* divider between the three fields */
+
+  /* Motion */
+  --shade-duration: 280ms;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Default (no band yet) = the empty state */
+  --ground: #12110e; --figure: #f4ecd2; --label: #a39a85; --rule: #7a725f;
+}
+
+/* One block per band: ground = band taken very dark, figure = band lifted to ≥ 6.7:1,
+   label = muted band tint (≥ 5.8:1), rule = mid band tone (≥ 3.4:1, a UI boundary). */
+[data-band="m40"] { --ground: #121023; --figure: #bab3fe; --label: #a8a6c9; --rule: #7d77b4; }
+[data-band="m30"] { --ground: #151429; --figure: #b5b5ff; --label: #a6a7ca; --rule: #7877bc; }
+[data-band="m20"] { --ground: #121b30; --figure: #a0bcff; --label: #9cabcb; --rule: #617ec3; }
+[data-band="m10"] { --ground: #142333; --figure: #8bc3ff; --label: #94aeca; --rule: #5684b4; }
+[data-band="0"]   { --ground: #1b2c33; --figure: #7cc3e0; --label: #96b0bb; --rule: #5a889b; }
+[data-band="10"]  { --ground: #25301e; --figure: #a8d98a; --label: #9fb294; --rule: #6c8b58; }
+[data-band="20"]  { --ground: #342e14; --figure: #f2d34f; --label: #b4ab87; --rule: #937f2a; }
+[data-band="30"]  { --ground: #362311; --figure: #f29a3a; --label: #c2a58b; --rule: #ab7237; }
+[data-band="40"]  { --ground: #351810; --figure: #ffa289; --label: #c8a095; --rule: #c06148; }
+[data-band="50"]  { --ground: #2b100f; --figure: #ffa09a; --label: #c99f9c; --rule: #bc615d; }
+/* Below absolute zero: off the map. No band colour, near-black ground, figures in ink. */
+[data-band="abs"] { --ground: #0b0a0d; --figure: #f4ecd2; --label: #a39a85; --rule: #6e6878; }
