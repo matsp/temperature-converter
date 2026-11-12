@@ -23,18 +23,36 @@ function send(method, params = {}, timeoutMs = 5000) {
   });
 }
 
+let chromeLog = "";
+function diagnose(reason) {
+  const text = `${reason} | chrome=${CHROME} | stderr: ${chromeLog.slice(-1500)}`.replace(/\r?\n/g, " | ");
+  console.log(`::error title=Chrome startup::${text}`); // becomes a CI annotation
+  return text;
+}
+
 before(async () => {
   profile = mkdtempSync(join(tmpdir(), "tc-page-"));
   const port = 9400 + Math.floor(Math.random() * 400);
   chrome = spawn(CHROME, ["--headless=new", "--no-sandbox", "--disable-gpu", "--disable-dev-shm-usage", "--hide-scrollbars",
-    `--remote-debugging-port=${port}`, `--user-data-dir=${profile}`, "about:blank"], { stdio: "ignore" });
+    "--no-first-run", "--no-default-browser-check", "--disable-extensions", "--disable-background-networking",
+    `--remote-debugging-port=${port}`, `--user-data-dir=${profile}`, "about:blank"], { stdio: ["ignore", "ignore", "pipe"] });
+  chrome.stderr.on("data", (d) => { chromeLog += d; });
   chrome.on("error", (e) => { spawnError = e; });
+  let exitInfo;
+  chrome.on("exit", (code, sig) => { exitInfo = `exit ${code} ${sig}`; });
   let target;
-  for (let i = 0; i < 75 && !target && !spawnError; i++) {
+  for (let i = 0; i < 100 && !target && !spawnError && !exitInfo; i++) {
     await sleep(200);
-    try { target = (await (await fetch(`http://127.0.0.1:${port}/json`)).json()).find((t) => t.type === "page"); } catch {}
+    try {
+      const list = await (await fetch(`http://127.0.0.1:${port}/json`)).json();
+      target = list.find((t) => t.type === "page");
+      if (!target && list.length === 0) {
+        // Some Chrome builds start without a page target: ask for one.
+        target = await (await fetch(`http://127.0.0.1:${port}/json/new?about:blank`, { method: "PUT" })).json();
+      }
+    } catch {}
   }
-  assert.ok(target, `Chrome did not start (${CHROME}): ${spawnError || "no page target"}`);
+  if (!target) assert.fail(diagnose(`Chrome did not start: ${spawnError || exitInfo || "no page target"}`));
   ws = new WebSocket(target.webSocketDebuggerUrl);
   await new Promise((r, j) => { ws.addEventListener("open", r, { once: true }); ws.addEventListener("error", j, { once: true }); });
   ws.addEventListener("message", (e) => {
@@ -47,7 +65,7 @@ before(async () => {
   await send("Page.enable");
   await send("Runtime.enable");
   await send("Network.enable");
-});
+}, { timeout: 40000 });
 
 after(async () => {
   try { ws && ws.close(); } catch {}
