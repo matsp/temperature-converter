@@ -26,3 +26,12 @@ Mode: Operate (a one-screen tool). Code-led; no image generation. Seed reference
 
 Sketches: design/directions/*.html, screenshots design/screenshots/directions/*.png.
 Fonts (OFL, self-hosted under design/fonts/ because the page must work offline from file://): Source Serif 4 + Public Sans (A), Barlow + Barlow Condensed (B), Archivo (C).
+
+## Round 2 (Mats: "Option B, but darker")
+Three darker takes on the weather-map direction, same layout, type and legend (shared CSS design/directions/r2-shared.css):
+- A Deep shade: ground = the isotherm colour taken very dark (color-mix 22% hue into near-black); numerals in the full isotherm colour. Closest to B.
+- B Night map: fixed near-black ground (#101215); numerals in the isotherm colour; legend dimmed except the current band, which glows.
+- C Dark frame: near-black page; the three fields sit on one full-width band in the isotherm colour with dark numerals.
+Learned: with a dark ground the Kelvin field at 136px clips inside a padded band; C uses 116px. Opacity on legend cells also dims their labels; use an inset shadow overlay instead.
+Contrast hook flags on r2 sketches are unresolved var()/color-mix() values; rendered pairs pass AA (e.g. #8d939c on #101215 ~6:1).
+Screenshots: design/screenshots/directions/r2-*.png

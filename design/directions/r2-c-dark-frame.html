@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Temperature converter — round 2, C: dark frame</title>
+<link rel="stylesheet" href="r2-shared.css">
+<style>
+/* Dark page; the three fields sit on one full-width band in the isotherm colour. */
+:root {
+  --ground: #15130e;
+  --num: #1d1606;
+  --ink: #efe8d4;
+  --ink-2: #a39a82;
+  --rule: rgba(29, 22, 6, 0.3);
+}
+main { background: var(--hue); margin: 0 56px; padding: 36px 48px; align-self: center; --label: #4a3a10; }
+main .field input { font-size: 116px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Temperature converter</h1>
+  <p>Type in any field. The band takes the colour of the temperature.</p>
+</header>
+<main>
+  <div class="field"><label for="c">Celsius</label><div class="row"><input id="c" inputmode="decimal" value="24"><span class="sym">°C</span></div></div>
+  <div class="field"><label for="f">Fahrenheit</label><div class="row"><input id="f" inputmode="decimal" value="75.2"><span class="sym">°F</span></div></div>
+  <div class="field"><label for="k">Kelvin</label><div class="row"><input id="k" inputmode="decimal" value="297.15"><span class="sym">K</span></div></div>
+</main>
+<div class="legend" aria-hidden="true">
+  <div class="marker"><i>24 °C</i><b></b></div>
+  <ol>
+    <li style="background:var(--t-m40)"><span>−40</span></li><li style="background:var(--t-m30)"><span>−30</span></li>
+    <li style="background:var(--t-m20)"><span>−20</span></li><li style="background:var(--t-m10)"><span>−10</span></li>
+    <li style="background:var(--t-0)"><span>0</span></li><li style="background:var(--t-10)"><span>10</span></li>
+    <li style="background:var(--t-20)"><span>20</span></li><li style="background:var(--t-30)"><span>30</span></li>
+    <li style="background:var(--t-40)"><span>40</span></li><li style="background:var(--t-50)"><span>50 °C</span></li>
+  </ol>
+</div>
+</body>
+</html>
