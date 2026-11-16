@@ -17,7 +17,8 @@ Full build, test, lint and run commands live in [knowledge/wiki/runbook/](knowle
 
 ## Team flow
 
-- Roles: product-owner (spec), architect (plan, CI/CD, repo setup), engineer (code), code-reviewer, qa-engineer, release-manager (PRs, merges), tech-writer (wiki).
+- Roles: product-owner (spec), architect (plan, CI/CD, repo setup), engineer (code), code-reviewer, qa-engineer, tech-writer (wiki).
+- PRs and merges: The engineer opens the PR (`codingtool pr-open`) after the last task; after QA pass the qa-engineer runs `codingtool gate3` and creates a card for the `auto-merge` lane (a script, no LLM): it waits for CI, asks Mats for approval (gate 3), merges, cleans up, checks CI/deploy on main and pings. The product-owner, architect, ui-designer and tech-writer hand spec/plan/design/wiki branches over with `codingtool doc-card`; the script merges those without approval. Red CI or a conflict: fix card for the engineer. Main red: ping to Mats and a fix card for the engineer.
 - Gates: Mats approves the spec, the plan and every code PR. Nothing reaches `main` without a PR and green CI. Nobody pushes to `main`.
 - Test-driven development always: no production code without a failing test first.
 - Branches: `spec/<topic>`, `plan/<topic>`, `feat/<topic>`, `wiki/<YYYY-MM-DD>-<card id>`.
@@ -75,4 +76,4 @@ A domain may have conventions in `knowledge/wiki/<domain>/conventions/` or the `
 
 ### Git
 
-The tech-writer works on branch `wiki/<YYYY-MM-DD>-<card id>`, changes only `knowledge/wiki/`, and hands the branch to the release-manager for the PR. Never push to `main`.
+The tech-writer works on branch `wiki/<YYYY-MM-DD>-<card id>`, changes only `knowledge/wiki/`, and hands the branch over with `codingtool doc-card` (the auto-merge script merges it). Never push to `main`.
